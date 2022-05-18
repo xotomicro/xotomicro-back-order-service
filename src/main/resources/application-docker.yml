@@ -9,7 +9,7 @@ eureka:
     preferIpAddress: true
 
 kafka:
-  bootstrapServer: kafka:9092
+  bootstrapServer: kafka-headless:9092
   consumerGroup: xotomicro-back-order-service
   topics:
     product: product
@@ -18,20 +18,26 @@ spring:
   application:
     name: xotomicro-back-order-service
   redis:
-    host: order-redis
+    host: order-redis-master
     port: 6379
     database: 0
     timeout: 60000
     defalt-ttl-in-mins: 5
   datasource:
-    url: jdbc:postgresql://order-db:5432/boilerplate
+    url: jdbc:postgresql://order-db-postgresql:5432/boilerplate
     driverClassName: org.postgresql.Driver
     username: postgres
     password: admin
     jpa:
       database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+  flyway:
+    ignore-missing-migrations: true
+    out-of-order: true
+
 flyway:
   user: postgres
   password: admin
-  url: jdbc:postgresql://order-db:5432/boilerplate
+  url: jdbc:postgresql://order-db-postgresql:5432/boilerplate
+  ignore-missing-migrations: true
+  out-of-order: true
