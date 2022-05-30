@@ -4,7 +4,7 @@ services:
     ##    BACKEND    ##
     ###################
 
-    order-redis:
+    order-redis-master:
         image: docker.io/bitnami/redis:6.2
         container_name: order-redis
         environment:
@@ -16,7 +16,7 @@ services:
             timeout: 1s
             retries: 10
 
-    order-db:
+    order-db-postgresql:
         image: 'postgres'
         container_name: order-db
         environment:
