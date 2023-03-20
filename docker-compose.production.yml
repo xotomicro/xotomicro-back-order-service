@@ -1,0 +1,48 @@
+version: '2.1'
+services:
+    ###################
+    ##    BACKEND    ##
+    ###################
+
+    order-redis-master:
+        image: docker.io/bitnami/redis:6.2
+        container_name: order-redis
+        environment:
+            - ALLOW_EMPTY_PASSWORD=yes
+            - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+        healthcheck:
+            test: ['CMD-SHELL', 'redis-cli', 'ping']
+            interval: 10s
+            timeout: 1s
+            retries: 10
+
+    order-db-postgresql:
+        image: 'postgres'
+        container_name: order-db
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=admin
+            - POSTGRES_DB=boilerplate
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U postgres']
+            interval: 10s
+            timeout: 1s
+            retries: 10
+
+    xotomicro-back-order-service:
+        build:
+            context: .
+            dockerfile: docker/dockerfile.production
+        container_name: xotomicro-back-order-service
+        image: xotomicro-back-order-service
+        environment:
+            - JVM_OPTS=-Xmx512m -Xms512m
+            - PROFILE=${PROFILE}
+
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://localhost:8084/actuator/health']
+            interval: 10s
+            timeout: 1s
+            retries: 10
+        env_file:
+            - .env
